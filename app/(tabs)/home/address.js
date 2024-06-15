@@ -1,12 +1,18 @@
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import {
   Entypo,
   Ionicons, AntDesign, FontAwesome, EvilIcons
 } from "@expo/vector-icons";
+import moment from "moment";
 
 const address = () => {
   const [step, setStep] = useState(1);
+  const [currentDate, setCurrentDate] = useState(moment());
+  const [deliveryDate, setDeliveryDate] = useState(moment());
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDeliveryTime, setSelectedDeliveryTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   const handleBack = () => {
     setStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
@@ -25,6 +31,44 @@ const address = () => {
     });
   };
   console.log(step);
+
+  const getNext6Days = () => {
+    const nextDays = [];
+    for (let i = 0; i < 5; i++) {
+      const nextDate = moment(currentDate).add(i, 'days');
+
+      nextDays.push(nextDate);
+    }
+    return nextDays;
+  };
+  const renderDateButtons = () => {
+    const next6Days = getNext6Days();
+
+    return next6Days?.map((date,index) =>(
+      <TouchableOpacity 
+      style={[styles.map_pickUp_selectButton,
+        {
+          backgroundColor:date.isSame(selectedDate,'day') ? '#0066b2' : 'white',
+          borderColor: date.isSame(selectedDate,'day') ? 'transparent' :'#0066b2',
+          borderWidth: date.isSame(selectedDate,'day') ? 0 : 1
+        }
+      ]} 
+      onPress={() => setSelectedDate(date)}>
+        <Text style={[
+          styles.map_pickUp_selectButton_days, 
+          {color: date.isSame(selectedDate, 'day') ? 'white' : 'black'}
+          ]}>
+            {date?.format('D')}
+        </Text>
+        <Text style={[
+          styles.map_pickUp_selectButton_days, 
+          {marginTop:3,color: date.isSame(selectedDate, 'day') ? 'white' : 'black'}
+          ]}>
+            {date?.format('ddd')}
+        </Text>
+      </TouchableOpacity>
+    ))
+  };
 
   return (
     <View style={styles.container}>
@@ -92,12 +136,17 @@ const address = () => {
 
           {
             step == 2 && (
-              <View>
+              <View style={styles.map_pickUp}>
                 <View>
                   <EvilIcons name="location" size={24} color='black' />
-                  <View>
-                    <Text>Pick up slot</Text>
+                  <View style={styles.map_pickUp_contain}>
+                    <Text style={{fontSize:16}}>Pick up slot</Text>
+                    <Text style={styles.map_pickUp_dayTitle}>{currentDate.format('MMMM YYYY')}</Text>
                   </View>
+                </View>
+
+                <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+                  {renderDateButtons()}
                 </View>
               </View>
             )
@@ -220,5 +269,35 @@ const styles = StyleSheet.create({
     color:'gray',
     fontSize:15,
     fontWeight:'500'
+  },
+  map_pickUp:{
+    marginTop:10,
+    backgroundColor:'white',
+    padding:10,
+    borderRadius:10
+  },
+  map_pickUp_contain:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10
+  },
+  map_pickUp_dayTitle:{
+    marginTop:4,
+    fontWeight:'500',
+    fontSize:16
+  },
+  map_pickUp_selectButton:{
+    padding:10,
+    margin:10,
+    borderRadius:6,
+    width:50,
+   // backgroundColor:date.isSame(selectedDate,'day') ? '#0066b2' : 'white',
+   // borderColor: date.isSame(selectedDate,'day') ? 'transparent' :'#0066b2',
+   // borderWidth: date.isSame(selectedDate,'day') ? 0 : 1
+  },
+  map_pickUp_selectButton_days:{
+    textAlign:'center',
+    fontSize:13,
+    // color: date.isSame(selectedDate,'day') ? 'white : 'black'
   }
 });
