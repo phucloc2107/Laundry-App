@@ -14,6 +14,13 @@ const address = () => {
   const [selectedDeliveryTime, setSelectedDeliveryTime] = useState(null);
   const [selectedDate, setSelectedDate] = useState(moment());
 
+  const pickupTimeOptions = [
+    {startTime: '6:30 AM', endTime: '9:00 AM'},
+    {startTime: '9:00 AM', endTime: '11:30 AM'},
+    {startTime: '5:00 PM', endTime: '7:30 PM'},
+    {startTime: '7:30 PM', endTime: '10:00 PM'},
+  ]
+
   const handleBack = () => {
     setStep((prevStep) => (prevStep > 1 ? prevStep - 1 : prevStep));
   };
@@ -69,6 +76,45 @@ const address = () => {
       </TouchableOpacity>
     ))
   };
+
+  const  renderPickUpTimeOptions = () => {
+    if (selectedDate) {
+      const isCurrentDate = selectedDate.isSame(currentDate, 'day');
+
+      const currentTime = moment();
+
+      return pickupTimeOptions.map((option, index) => {
+        console.log(option);
+        const startTime = moment(selectedDate.format('YYYY-MM-DD') + " " + option.startTime, 'YYYY-MM-DD LT');
+
+        // Check if the time slot is past the current time
+        const isTimeslotPast = isCurrentDate && startTime.isBefore(currentDate);
+
+        return(
+          <TouchableOpacity 
+          onPress={() => {
+            if (!isTimeslotPast) {
+              setSelectedTime(option);
+            }
+          }}
+          style={[styles.map_pickUpTimeOption_button,
+            {
+              opacity: isTimeslotPast ? 0.5 : 1,
+              textDecorationLine: isTimeslotPast ? 'line-through' : 'none',
+              backgroundColor: selectedTime && selectedTime.startTime === option.startTime && selectedTime.endTime === option.endTime ? '#0066b2' : 'white'
+            }
+            ]}>
+            <Text style={{ 
+              textAlign:'center', 
+              color: selectedTime && selectedTime.startTime === option.startTime && selectedTime.endTime === option.endTime ? 'white' : 'black'
+            }}>
+              {`${option.startTime} - ${option.endTime}`}
+            </Text>
+          </TouchableOpacity>
+        )
+      })
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -145,8 +191,14 @@ const address = () => {
                   </View>
                 </View>
 
+                {/* Pick up day option */}
                 <View style={{flexDirection:'row', flexWrap:'wrap'}}>
                   {renderDateButtons()}
+                </View>
+                {/* Pick up time option */}
+                <Text style={{marginHorizontal:10}}>Pickup Time Options</Text>
+                <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+                  {renderPickUpTimeOptions()}
                 </View>
               </View>
             )
@@ -299,5 +351,10 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontSize:13,
     // color: date.isSame(selectedDate,'day') ? 'white : 'black'
+  },
+  map_pickUpTimeOption_button:{
+    padding:10,
+    margin:10,
+    borderRadius:5
   }
 });
