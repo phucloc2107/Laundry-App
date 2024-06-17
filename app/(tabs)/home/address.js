@@ -116,6 +116,43 @@ const address = () => {
     }
   }
 
+  const getNextDays = () => {
+    const nextDays = [];
+    let startDate = moment().add(1, "days");
+
+    if (moment(selectedDate).isSameOrBefore(moment().add(2, "days"), "day")) {
+      startDate = moment(selectedDate).add(2, "days");
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const nextDate = moment(startDate).add(i, "days");
+      nextDays.push(nextDate);
+    }
+
+    return nextDays;
+  };
+
+  const renderButton = () => {
+    const next6Days = getNextDays();
+
+    return next6Days.map((date,index) => (
+      <TouchableOpacity 
+        key={index}
+        onPress={() => setDeliveryDate(date)}
+        style={[styles.map_pickUp_selectButton,
+        {
+          backgroundColor:date.isSame(deliveryDate,'day') ? '#0066b2' : 'white',
+          borderColor: date.isSame(deliveryDate,'day') ? 'transparent' :'#0066b2',
+          borderWidth: date.isSame(deliveryDate,'day') ? 0 : 1
+        }
+      ]} 
+      >
+        <Text style={{marginTop:3,textAlign:'center',fontSize:13,color: date.isSame(deliveryDate, 'day') ? 'white' : 'black'}}>{date?.format("D")}</Text>
+        <Text style={{marginTop:3,textAlign:'center',fontSize:13,color: date.isSame(deliveryDate, 'day') ? 'white' : 'black'}}>{date?.format("ddd")}</Text>
+      </TouchableOpacity>
+    ))
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -148,6 +185,7 @@ const address = () => {
 
       <View style={styles.mapContainer}>
         <ScrollView>
+          {/* address screen */}
           {
             step == 1 && (
               <View>
@@ -180,6 +218,7 @@ const address = () => {
             )
           }
 
+          {/* Pick up screen */}
           {
             step == 2 && (
               <View style={styles.map_pickUp}>
@@ -201,6 +240,42 @@ const address = () => {
                   {renderPickUpTimeOptions()}
                 </View>
               </View>
+            )
+          }
+
+          {/* Edit pick up screen */}{
+            step == 3 && (
+              <>  
+                <View style={styles.map_edit}>
+                  <View style={styles.map_edit_header}>
+                    <View style={styles.map_edit_headerContainer}>
+                      <EvilIcons name="location" size={24} color='black' />
+                      <Text>Pick up slot</Text>
+                    </View>
+                    <AntDesign name="edit" size={24} color='black' />
+                  </View>
+
+                  <View style={styles.map_edit_contain}>
+                    <View style={styles.map_edit_daySelected}>
+                      <Text style={styles.map_edit_daySelectedTitle}>{selectedDate.format('D')}</Text>
+                      <Text style={[styles.map_edit_daySelectedTitle, {marginTop:3}]}>{selectedDate.format('ddd')}</Text>
+                    </View>
+
+                    <View style={styles.map_edit_timeSelected}>
+                      <Text style={styles.map_edit_timeSelectedTitle}>{`${selectedTime.startTime} - ${selectedTime.endTime}`}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.map_edit_footer}>
+                  <View style={styles.map_edit_footerContain}>
+                        {renderButton()}
+                  </View>
+
+                  <Text style={{marginHorizontal:10}}>Pickup Time Options</Text>
+                  <View style={styles.map_edit_footerContain}>{renderPickUpTimeOptions()}</View>
+                </View>
+              </>
             )
           }
         </ScrollView>
@@ -356,5 +431,58 @@ const styles = StyleSheet.create({
     padding:10,
     margin:10,
     borderRadius:5
+  },
+  map_edit:{
+    backgroundColor:'white',
+    marginTop:10,
+    padding:10,
+    borderRadius:10,
+  },
+  map_edit_header:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10,
+    justifyContent:'space-between'
+  },
+  map_edit_headerContainer:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10
+  },
+  map_edit_contain:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between'
+  },
+  map_edit_daySelected:{
+    padding:10,
+    margin:10,
+    borderRadius:6,
+    width:50,
+    backgroundColor:'#0066b2'
+  },
+  map_edit_daySelectedTitle:{
+    textAlign:'center',
+    color:'white',
+    fontSize:13
+  },
+  map_edit_timeSelected:{
+    padding:10,
+    borderRadius:5,
+    backgroundColor:'#0066b2'
+  },
+  map_edit_timeSelectedTitle:{
+    textAlign:'center',
+    color:'white'
+  },
+  map_edit_footer:{
+    backgroundColor: "white",
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 10,
+  },
+  map_edit_footerContain:{
+    flexDirection:'row',
+    flexWrap:'wrap'
   }
 });
