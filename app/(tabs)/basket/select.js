@@ -1,6 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text, View,Image } from "react-native";
 import React, { useState } from "react";
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather} from "@expo/vector-icons";
+import DressItems from '../../../component/DressItems';
 
 const select = () => {
   const menData = [
@@ -144,6 +145,7 @@ const select = () => {
             </View>
         </View>
 
+      {/* menu button */}
         <View style={styles.menu}>
             <Pressable 
                 onPress={() => setSelectedOption('Wash + fold')}
@@ -188,6 +190,141 @@ const select = () => {
                 />
                 <Text style={styles.washFold_buttonText}>Dry Clean</Text>
             </Pressable>
+        </View>
+
+      {/* option button */}
+        <View>
+          <View style={styles.laundryType}>
+            <Pressable 
+              style={[styles.laundryType_button, {backgroundColor: option == 'Men' ? '#0066b2' : 'white'}]} 
+              onPress={()=> setOption('Men')}
+            >
+              <Text style={[styles.laundryType_buttonText, {color:option == 'Men' ? 'white' : 'gray'}]}>Men</Text>
+            </Pressable>
+
+            <Pressable 
+              style={[styles.laundryType_button, {backgroundColor: option == 'Women' ? '#0066b2' : 'white'}]}
+              onPress={()=> setOption('Women')}
+            >
+              <Text style={[styles.laundryType_buttonText, {color:option == 'Women' ? 'white' : 'gray'}]}>Women</Text>
+            </Pressable>
+
+            <Pressable 
+              style={[styles.laundryType_button, {backgroundColor: option == 'Kids' ? '#0066b2' : 'white'}]}
+              onPress={()=> setOption('Kids')}
+            >
+              <Text style={[styles.laundryType_buttonText, {color:option == 'Kids' ? 'white' : 'gray'}]}>Kids</Text>
+            </Pressable>
+
+            <Pressable 
+              style={[styles.laundryType_button, {backgroundColor: option == 'Houseold' ? '#0066b2' : 'white'}]}
+              onPress={()=> setOption('Houseold')}
+            >
+              <Text style={[styles.laundryType_buttonText, {color:option == 'Houseold' ? 'white' : 'gray'}]}>Houseold</Text>
+            </Pressable>
+          </View>
+        </View>
+
+        {/* Men Option */}
+        <View style={{marginHorizontal:10}}>
+          {option == 'Men' && (
+            <View>
+              {menData?.map((item,index) => (
+                <DressItems 
+                  item={item}
+                  selectedOption={selectedOption}
+                  key={index}
+                />
+              ))}
+            </View>
+          )}
+        </View>
+        {/* Women Option */}
+        <View style={{marginHorizontal:10}}>
+          {option == 'Women' && (
+            <View>
+              {womenData?.map((item,index) => (
+                 <Pressable style={styles.buttonContainer} key={index}>
+                 <View>
+                   <Image 
+                     source={{uri: item?.image}}
+                     style={{width:40,height:40}}
+                   />
+                 </View>
+                 <View style={styles.buttonContain}>
+                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
+                   <Text style={styles.buttonContain_textPrice}>
+                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
+                       : selectedOption == 'Steam Iron' ? item.price + 35
+                       : selectedOption == 'Dry Clean' ? item.price + 45
+                       : item.price}
+                   </Text>
+                 </View>
+                 <Pressable>
+                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
+                 </Pressable>
+               </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
+        {/* Kids Option */}
+        <View style={{marginHorizontal:10}}>
+          {option == 'Kids' && (
+            <View>
+              {kidsData?.map((item,index) => (
+                 <Pressable style={styles.buttonContainer} key={index}>
+                 <View>
+                   <Image 
+                     source={{uri: item?.image}}
+                     style={{width:40,height:40}}
+                   />
+                 </View>
+                 <View style={styles.buttonContain}>
+                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
+                   <Text style={styles.buttonContain_textPrice}>
+                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
+                       : selectedOption == 'Steam Iron' ? item.price + 35
+                       : selectedOption == 'Dry Clean' ? item.price + 45
+                       : item.price}
+                   </Text>
+                 </View>
+                 <Pressable>
+                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
+                 </Pressable>
+               </Pressable>
+              ))}
+            </View>
+          )}
+        </View>
+        {/* House Option */}
+        <View style={{marginHorizontal:10}}>
+          {option == 'Houseold' && (
+            <View>
+              {houseData?.map((item,index) => (
+                 <Pressable style={styles.buttonContainer} key={index}>
+                 <View>
+                   <Image 
+                     source={{uri: item?.image}}
+                     style={{width:40,height:40}}
+                   />
+                 </View>
+                 <View style={styles.buttonContain}>
+                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
+                   <Text style={styles.buttonContain_textPrice}>
+                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
+                       : selectedOption == 'Steam Iron' ? item.price + 35
+                       : selectedOption == 'Dry Clean' ? item.price + 45
+                       : item.price}
+                   </Text>
+                 </View>
+                 <Pressable>
+                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
+                 </Pressable>
+               </Pressable>
+              ))}
+            </View>
+          )}
         </View>
     </ScrollView>
   );
@@ -246,5 +383,39 @@ const styles = StyleSheet.create({
         textAlign:'center',
         fontSize:12,
         marginTop:5
+    },
+    laundryType:{
+      marginVertical:20,
+      flexDirection:'row',
+      alignItems:'center',
+      gap:10,
+      justifyContent:'space-around'
+    },
+    laundryType_button:{
+      padding:10,
+      borderRadius:4
+    },
+    laundryType_buttonText:{
+      fontSize:14,
+      fontWeight:'500',
+      textAlign:'center'
+    },
+    buttonContainer:{
+      padding:10,
+      backgroundColor:"white",
+      marginVertical:13,
+      flexDirection:'row',
+      gap:12,
+      alignItems:'center'
+    },
+    buttonContain:{
+      flex:1
+    },
+    buttonContain_textName:{
+      fontSize:15,
+      fontWeight:'500'
+    },
+    buttonContain_textPrice:{
+      marginTop:3
     }
 });
