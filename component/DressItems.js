@@ -1,8 +1,13 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather} from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, incrementQuantity, decrementQuantity } from "../redux/reducer/CartReducer";
 
 const DressItems = ({ item, selectedOption }) => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.cart);
+
   return (
     <View>
       <Pressable style={styles.buttonContainer}>
@@ -21,9 +26,36 @@ const DressItems = ({ item, selectedOption }) => {
               : item.price}
           </Text>
         </View>
-        <Pressable>
+
+        {cart.some((c) => c.item.id == item.id) ? (
+           <Pressable style={styles.buttonDecrement}>
+           <Pressable
+             onPress={() => {
+               dispatch(decrementQuantity(item));
+             }}
+           >
+             <Text style={styles.buttonDecrement_text}> - </Text>
+           </Pressable>
+
+           <Pressable>
+             <Text style={styles.textNumber}>
+               {cart.find((c) => c.item.id === item.id)?.item.quantity}
+             </Text>
+           </Pressable>
+
+           <Pressable
+             onPress={() => {
+               dispatch(incrementQuantity(item));
+             }}
+           >
+             <Text style={styles.buttonIncrement_text}> + </Text>
+           </Pressable>
+         </Pressable>
+        ) : (
+        <Pressable onPress={() => {dispatch(addToCart({item, category:selectedOption}))}}>
           <AntDesign name="pluscircleo" size={24} color='#89cff0' />
         </Pressable>
+        )}
       </Pressable>
     </View>
   );
@@ -49,5 +81,25 @@ const styles = StyleSheet.create({
   },
   buttonContain_textPrice:{
     marginTop:3
+  },
+  buttonDecrement:{
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  buttonDecrement_text:{
+    fontSize: 25,
+    paddingHorizontal: 6,
+  },
+  textNumber:{
+    color: "black",
+    paddingHorizontal: 6,
+    fontSize: 15,
+  },
+  buttonIncrement_text:{
+    fontSize: 17,
+    color: "black",
+    paddingHorizontal: 6,
   }
 });

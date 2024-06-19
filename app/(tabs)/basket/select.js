@@ -244,26 +244,11 @@ const select = () => {
           {option == 'Women' && (
             <View>
               {womenData?.map((item,index) => (
-                 <Pressable style={styles.buttonContainer} key={index}>
-                 <View>
-                   <Image 
-                     source={{uri: item?.image}}
-                     style={{width:40,height:40}}
-                   />
-                 </View>
-                 <View style={styles.buttonContain}>
-                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
-                   <Text style={styles.buttonContain_textPrice}>
-                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
-                       : selectedOption == 'Steam Iron' ? item.price + 35
-                       : selectedOption == 'Dry Clean' ? item.price + 45
-                       : item.price}
-                   </Text>
-                 </View>
-                 <Pressable>
-                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
-                 </Pressable>
-               </Pressable>
+                <DressItems 
+                 item={item}
+                 selectedOption={selectedOption}
+                 key={index}
+                />
               ))}
             </View>
           )}
@@ -273,26 +258,11 @@ const select = () => {
           {option == 'Kids' && (
             <View>
               {kidsData?.map((item,index) => (
-                 <Pressable style={styles.buttonContainer} key={index}>
-                 <View>
-                   <Image 
-                     source={{uri: item?.image}}
-                     style={{width:40,height:40}}
-                   />
-                 </View>
-                 <View style={styles.buttonContain}>
-                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
-                   <Text style={styles.buttonContain_textPrice}>
-                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
-                       : selectedOption == 'Steam Iron' ? item.price + 35
-                       : selectedOption == 'Dry Clean' ? item.price + 45
-                       : item.price}
-                   </Text>
-                 </View>
-                 <Pressable>
-                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
-                 </Pressable>
-               </Pressable>
+                <DressItems 
+                 item={item}
+                 selectedOption={selectedOption}
+                 key={index}
+                />
               ))}
             </View>
           )}
@@ -302,26 +272,11 @@ const select = () => {
           {option == 'Houseold' && (
             <View>
               {houseData?.map((item,index) => (
-                 <Pressable style={styles.buttonContainer} key={index}>
-                 <View>
-                   <Image 
-                     source={{uri: item?.image}}
-                     style={{width:40,height:40}}
-                   />
-                 </View>
-                 <View style={styles.buttonContain}>
-                   <Text style={styles.buttonContain_textName}>{item?.name}</Text>
-                   <Text style={styles.buttonContain_textPrice}>
-                     $ {selectedOption == 'Wash + Iron' ? item.price +20 
-                       : selectedOption == 'Steam Iron' ? item.price + 35
-                       : selectedOption == 'Dry Clean' ? item.price + 45
-                       : item.price}
-                   </Text>
-                 </View>
-                 <Pressable>
-                   <AntDesign name="pluscircleo" size={24} color='#89cff0' />
-                 </Pressable>
-               </Pressable>
+                <DressItems 
+                 item={item}
+                 selectedOption={selectedOption}
+                 key={index}
+                />
               ))}
             </View>
           )}
@@ -400,22 +355,5 @@ const styles = StyleSheet.create({
       fontWeight:'500',
       textAlign:'center'
     },
-    buttonContainer:{
-      padding:10,
-      backgroundColor:"white",
-      marginVertical:13,
-      flexDirection:'row',
-      gap:12,
-      alignItems:'center'
-    },
-    buttonContain:{
-      flex:1
-    },
-    buttonContain_textName:{
-      fontSize:15,
-      fontWeight:'500'
-    },
-    buttonContain_textPrice:{
-      marginTop:3
-    }
+    
 });
