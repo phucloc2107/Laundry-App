@@ -2,6 +2,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View,Image } from "react-nativ
 import React, { useState } from "react";
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather} from "@expo/vector-icons";
 import DressItems from '../../../component/DressItems';
+import { useDispatch, useSelector } from "react-redux";
 
 const select = () => {
   const menData = [
@@ -126,8 +127,14 @@ const select = () => {
   ];
   const [option, setOption] = useState('Men');
   const [selectedOption, setSelectedOption] = useState('Wash + fold');
+  const cart = useSelector((state) => state.cart.cart);
+  const dispatch = useDispatch();
+  const total = cart 
+  ?.map((item) => item.item.price * item.item.quantity)
+  .reduce((prev, curr) => prev + curr, 0);
 
   return (
+    <>
     <ScrollView>
         <View style={styles.header}>
             <View style={styles.header_container}>
@@ -282,6 +289,26 @@ const select = () => {
           )}
         </View>
     </ScrollView>
+    
+    {cart.length >  0 && (
+      <Pressable style={styles.basketTotal_buttonContainer}>
+        <View style={styles.basketTotal_container}>
+          <View style={styles.basketTotal_icon}>
+            <Ionicons name="basket-outline" size={24} color='black' />
+          </View>
+
+          <View style={{flex:1}}>
+            <Text style={styles.basketTotal_title}>Basket Total $ {total}</Text>
+            <Text style={[styles.basketTotal_title, {marginTop:3}]}>You have {cart.length} item saved in your basket</Text>
+          </View>
+          
+          <Pressable style={styles.basketTotal_buttonView}>
+            <Text>View</Text>
+          </Pressable>
+        </View>
+      </Pressable>
+    )}
+    </>
   );
 };
 
@@ -355,5 +382,30 @@ const styles = StyleSheet.create({
       fontWeight:'500',
       textAlign:'center'
     },
-    
+    basketTotal_buttonContainer:{
+      backgroundColor:'#e0e0e0',
+      padding:10
+    },
+    basketTotal_container:{
+      flexDirection:'row',
+      alignItems:'center',
+      gap:12
+    },
+    basketTotal_icon:{
+      width:30,
+      height:30,
+      borderRadius:15,
+      backgroundColor:'white',
+      justifyContent:'center',
+      alignItems:'center'
+    },
+    basketTotal_title:{
+      fontSize:13,
+      fontWeight:'500'
+    },
+    basketTotal_buttonView:{
+      padding:10,
+      backgroundColor:'white',
+      borderRadius:4
+    }
 });
