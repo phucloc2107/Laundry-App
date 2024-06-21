@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather} from "@expo/vector-icons";
 import DressItems from '../../../component/DressItems';
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "expo-router";
 
 const select = () => {
   const menData = [
@@ -127,6 +128,7 @@ const select = () => {
   ];
   const [option, setOption] = useState('Men');
   const [selectedOption, setSelectedOption] = useState('Wash + fold');
+  const router = useRouter();
   const cart = useSelector((state) => state.cart.cart);
   const dispatch = useDispatch();
   const total = cart 
@@ -302,7 +304,7 @@ const select = () => {
             <Text style={[styles.basketTotal_title, {marginTop:3}]}>You have {cart.length} item saved in your basket</Text>
           </View>
           
-          <Pressable style={styles.basketTotal_buttonView}>
+          <Pressable style={styles.basketTotal_buttonView} onPress={() => router.push('/basket/cart')}>
             <Text>View</Text>
           </Pressable>
         </View>
