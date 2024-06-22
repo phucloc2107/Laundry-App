@@ -1,13 +1,41 @@
 import { SafeAreaView, StyleSheet, Text, View, Image, KeyboardAvoidingView, TextInput, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather,MaterialIcons} from "@expo/vector-icons";
 import { useRouter } from 'expo-router';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("auth");
+        if (token) {
+          router.replace("/(tabs)/home");
+        }
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      const user = userCredential.user;
+      const token = user?.stsTokenManager.accessToken;
+
+      AsyncStorage.setItem("auth",token);
+    });
+
+    router.replace("/(tabs)/home");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,7 +85,7 @@ const login = () => {
                 <Text style={styles.loginForm_titleLogin_forgot}>Forgot Password?</Text>
             </View>
 
-            <Pressable style={styles.loginForm_buttonLogin}>
+            <Pressable style={styles.loginForm_buttonLogin} onPress={handleLogin}>
                 <Text style={styles.loginForm_buttonLogin_textLogin}>Login</Text>
             </Pressable>
 

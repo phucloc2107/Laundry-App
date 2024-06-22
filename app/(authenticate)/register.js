@@ -3,8 +3,8 @@ import React, {useState} from 'react';
 import {Entypo,Ionicons, AntDesign, FontAwesome, Octicons, Feather,MaterialIcons} from "@expo/vector-icons";
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../../firebase';
-import { setDoc } from 'firebase/firestore';
+import { auth,db } from '../../firebase';
+import { setDoc, doc } from 'firebase/firestore';
 
 const register = () => {
   const [email, setEmail] = useState('');
@@ -12,31 +12,32 @@ const register = () => {
   const router = useRouter();
 
   const handleRegister = async() => {
-    // try {
-    //   if (!email || !password) {
-    //     throw new Error('Email and password are required');
-    //   }
+    try {
+      if (!email || !password) {
+        throw new Error('Email and password are required');
+      }
 
-    //   const useCredential = createUserWithEmailAndPassword(auth,email,password).then((useCredential) => {
-    //     const user = useCredential._tokenResponse.email;
+      const useCredential = createUserWithEmailAndPassword(auth,email,password).then((useCredential) => {
+        const user = useCredential._tokenResponse.email;
 
-    //     const myUserUid = auth.currentUser.uid;
+        const myUserUid = auth.currentUser.uid;
 
-    //     sendEmailVerification(auth.currentUser).then(() => {
-    //       console.log('Email vertification sent to the user');
-    //     });
+        sendEmailVerification(auth.currentUser).then(() => {
+          console.log('Email vertification sent to the user');
+        });
 
-    //     setDoc(doc(db,'users',`${myUserUid}`),{
-    //       email:email,
-    //       password:password
-    //     });
-    //   });
+        setDoc(doc(db,'users',`${myUserUid}`),{
+          email:email,
+          password:password
+        });
+      });
 
-    //   setEmail(''),
-    //   setPassword('')
-    // } catch (error) {
-    //   console.log('Error', error);
-    // }
+      setEmail(''),
+      setPassword('')
+      router.replace('/login')
+    } catch (error) {
+      console.log('Error', error);
+    }
   }
 
   return (
