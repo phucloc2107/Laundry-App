@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   Entypo,
@@ -6,9 +6,14 @@ import {
 } from "@expo/vector-icons";
 import moment from "moment";
 import { useRouter } from "expo-router";
+import { useSelector } from "react-redux";
 
 const address = () => {
   const router = useRouter();
+  const cart = useSelector((state) => state.cart.cart);
+  const total = cart 
+  ?.map((item) => item.item.price * item.item.quantity)
+  .reduce((prev, curr) => prev + curr, 0);
   const [step, setStep] = useState(1);
   const [currentDate, setCurrentDate] = useState(moment());
   const [deliveryDate, setDeliveryDate] = useState(moment());
@@ -245,7 +250,8 @@ const address = () => {
             )
           }
 
-          {/* Edit pick up screen */}{
+          {/* Edit pick up screen */}
+          {
             step == 3 && (
               <>  
                 <View style={styles.map_edit}>
@@ -280,8 +286,95 @@ const address = () => {
               </>
             )
           }
+
+          {/* Your cart */}
+          {
+            step == 4 && (
+              <View style={styles.map_myCart_container}>
+                <View style={{padding:10}}>
+                  <Text style={styles.map_myCart_textName}>Your cart</Text>
+                </View>
+
+                <View style={{marginHorizontal:12}}>
+                  {cart?.map((item,index) => (
+                    <Pressable key={index} style={styles.cartItem_buttonContainer}>
+                      <View>
+                        <Image style={{width:40,height:40}} source={{uri:item?.item?.image}} />
+                      </View>
+
+                      <View style={{flex:1}}>
+                          <Text>{item?.item.name}</Text>
+                          <Text>{item?.item.price * item?.item.quantity}</Text>
+                      </View>
+
+                      <Pressable>
+                          <AntDesign name='pluscircleo' size={24} color='#89cff0' />
+                      </Pressable>
+                    </Pressable>
+                  ))}
+                </View>
+
+                <View style={styles.map_myCart_totalPrice}>
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>Total Amount</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ {total}</Text>
+                    </View>
+
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>Promo Code</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ 0</Text>
+                    </View>
+
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>Delivery Charges</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ 25</Text>
+                    </View>
+
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>Total Payable</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ {total + 25}</Text>
+                    </View>
+                </View>
+
+                <View style={[styles.map_myCart_totalPrice, {borderRadius:6,marginVertical:10}]}>
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>TOTAL AMOUNT</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ {total}</Text>
+                    </View>
+
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>TAXES AND CHARGES</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ 150</Text>
+                    </View>
+
+                    <View style={styles.map_myCart_totalPrice_contain}>
+                      <Text style={styles.map_myCart_totalPrice_text}>TOTAL PAYABLE</Text>
+                      <Text style={styles.map_myCart_totalPrice_text}>$ {total + 25 + 150}</Text>
+                    </View>
+                </View>
+              </View>
+            )}
         </ScrollView>
       </View>
+
+      {cart.length >  0 && (
+        <Pressable style={styles.basketTotal_buttonContainer}>
+          <View style={styles.basketTotal_container}>
+            <View style={styles.basketTotal_icon}>
+              <Ionicons name="basket-outline" size={24} color='black' />
+            </View>
+
+            <View style={{flex:1}}>
+              <Text style={styles.basketTotal_title}>Basket Total $ {total}</Text>
+              <Text style={[styles.basketTotal_title, {marginTop:3}]}>You have {cart.length} item saved in your basket</Text>
+            </View>
+            
+            <Pressable style={styles.basketTotal_buttonView} onPress={() => router.push('/basket/cart')}>
+              <Text>View</Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      )}
 
       <View style={styles.footer}>
         <Pressable style={[styles.footer_button, {backgroundColor:'#d0d0d0'}]} onPress={handleBack} disabled={step===1}>
@@ -486,5 +579,64 @@ const styles = StyleSheet.create({
   map_edit_footerContain:{
     flexDirection:'row',
     flexWrap:'wrap'
+  },
+  map_myCart_container:{
+    marginTop:10,
+    backgroundColor:'white',
+    borderRadius:10
+  },
+  map_myCart_textName:{
+    fontSize:16,
+    fontWeight:'600'
+  },
+  basketTotal_buttonContainer:{
+    backgroundColor:'#e0e0e0',
+    padding:10
+  },
+  basketTotal_container:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap:12
+  },
+  basketTotal_icon:{
+    width:30,
+    height:30,
+    borderRadius:15,
+    backgroundColor:'white',
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  basketTotal_title:{
+    fontSize:13,
+    fontWeight:'500'
+  },
+  basketTotal_buttonView:{
+    padding:10,
+    backgroundColor:'white',
+    borderRadius:4
+  },  
+  cartItem_buttonContainer:{
+    padding:10,
+    backgroundColor:'white',
+    marginVertical:13,
+    flexDirection:'row',
+    gap:12,
+    borderRadius:5,
+  },
+  map_myCart_totalPrice:{
+    backgroundColor:'#0066b2',
+    padding:10,
+    borderBottomLeftRadius:6,
+    borderBottomRightRadius:6
+  },
+  map_myCart_totalPrice_contain:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-between',
+    marginVertical:10
+  },
+  map_myCart_totalPrice_text:{
+    color:'white',
+    fontWeight:'500'
   }
 });

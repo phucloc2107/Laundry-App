@@ -31,7 +31,7 @@ const cart = () => {
               <Image style={{width:40,height:40}} source={{uri:item?.item?.image}} />
             </View>
 
-            <View>
+            <View style={{flex:1}}>
               <Text>{item?.item.name}</Text>
               <Text>{item?.item.price * item?.item.quantity}</Text>
             </View>
