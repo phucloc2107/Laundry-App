@@ -1,12 +1,14 @@
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Entypo,
   Ionicons, AntDesign, FontAwesome, EvilIcons
 } from "@expo/vector-icons";
 import moment from "moment";
+import { useRouter } from "expo-router";
 
 const address = () => {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [currentDate, setCurrentDate] = useState(moment());
   const [deliveryDate, setDeliveryDate] = useState(moment());
@@ -192,7 +194,7 @@ const address = () => {
                 {/* Map over all the address */}
                 <Pressable style={styles.map_iconButton}>
                   <AntDesign name="plus" size={24} color='black' />
-                  <Pressable>
+                  <Pressable onPress={() => router.push("/home/add")}>
                     <Text style={{fontSize:16}}>Add address</Text>
                   </Pressable>
                 </Pressable>
