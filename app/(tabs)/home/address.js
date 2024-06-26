@@ -6,10 +6,14 @@ import {
 } from "@expo/vector-icons";
 import moment from "moment";
 import { useRouter } from "expo-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { cleanCart } from "../../../redux/reducer/CartReducer";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../../firebase";
 
 const address = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const total = cart 
   ?.map((item) => item.item.price * item.item.quantity)
@@ -40,11 +44,27 @@ const address = () => {
       //check if next step is equal to 4
       if (nextStep == 5) {
         // Call the place order function
+        placeOrder();
       }
       return nextStep;
     });
   };
   console.log(step);
+
+  const placeOrder = async() => {
+    dispatch(cleanCart());
+
+    router.replace('/(tabs)/orders');
+
+    const ordersCollectionRef = collection(db, "users", userUid, "orders");
+
+    const orderDocRef = await addDoc(ordersCollectionRef, {
+      items: { ...cart },
+      address: selectedAdress,
+      pickuptime: `${selectedTime.startTime} - ${selectedTime.endTime}`,
+      deliveryTime: `${selectedDeliveryTime.startTime} - ${selectedDeliveryTime.endTime}`,
+    });
+  }
 
   const getNext6Days = () => {
     const nextDays = [];
